@@ -1,5 +1,3 @@
-
-
 void shell_loop(void);
 char *shell_read_line(void);
 
@@ -30,5 +28,19 @@ void shell_loop(void)
 		free(line);
 		free(args);
 	} while(status);
+}
+
+#define SHELL_RL_BUFSIZE 1024
+char *shell_read_line(void)
+{
+	int bufsize = SHELL_RL_BUFSIZE;
+	int position = 0;
+	char *buffer = malloc(sizeof(char) * bufsize);
+
+	if(!buffer) {
+		fprintf(stderr, "psh:allocation error\n");
+		exit(EXIT_FAILURE);
+
+	}
 }
 
