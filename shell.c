@@ -30,6 +30,7 @@ void shell_loop(void)
 	} while(status);
 }
 
+/* Function to read a line */
 #define SHELL_RL_BUFSIZE 1024
 char *shell_read_line(void)
 {
@@ -68,5 +69,41 @@ char *shell_read_line(void)
 		}
 	}
 }
+
+/* Function to parse a given line */
+#define SHELL_TOK_BUFSIZE 64
+#define SHELL_TOK_DELIM " \t\r\n\a"
+char **shell_split_line(char *line)
+{
+	int bufsize = SHELL_TOK_BUFSIZE, position=0;
+	char **tokens = malloc(bufsize * sizeof(char*));
+	char *token;
+
+	if(!tokens) {
+		fprintf(stderr, "shell: allocation error\n");
+		exit(EXIT_FAILURE);
+	}
+
+	token = strtok(line, SHELL_TOK_DELIM);
+	while(token != NULL) {
+		tokens[position] = token;
+		position++;
+
+		/* if buffer exceeded, reallocate the buffer */
+		if(position >= bufsize) {
+			bufsize += SHELL_TOK_BUFSIZE;
+			tokens = realloc(tokens, bufsize * sizeof(char*));
+			if(!tokens) {
+				fprintf(stderr, "shell: allocation error \n");
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		token = strtok(NULL, SHELL_TOK_DELIM);
+	}
+	tokens[position] = NULL;
+	return tokens;
+}
+
 
 
